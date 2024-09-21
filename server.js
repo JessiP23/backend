@@ -34,15 +34,18 @@ const JWT_SECRET = '9003TRK';
 // }));
 
 const corsOptions = {
-  origin: ['https://trk-murex.vercel.app'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-  methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
-  credentials: true,
-  exposedHeaders: ['Access-Control-Allow-Origin'],
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+    origin: (origin, callback) => {
+      if (origin === 'https://trk-murex.vercel.app' || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    exposedHeaders: ['Access-Control-Allow-Origin'],
+  };
+  
+  app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
